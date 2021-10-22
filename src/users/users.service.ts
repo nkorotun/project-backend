@@ -20,4 +20,13 @@ export class UsersService {
   async findOne(username: string): Promise<User | undefined> {
     return this.users.find((user) => user.username === username);
   }
+
+  async addOne(username: string, password: string): Promise<User | undefined> {
+    this.users.push({
+      userId: Math.random(),
+      username: username,
+      password: password,
+    });
+    return this.users;
+  }
 }

@@ -18,6 +18,10 @@ export class AuthService {
     return null;
   }
 
+  async register(user): Promise<any> {
+    return await this.usersService.addOne(user.username, user.password);
+  }
+
   async login(user: any) {
     const payload = { username: user.username, sub: user.userId };
     return {
