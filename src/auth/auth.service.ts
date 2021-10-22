@@ -19,6 +19,10 @@ export class AuthService {
   }
 
   async register(user): Promise<any> {
+    const checkUser = await this.usersService.findOne(user.username);
+    if (checkUser) {
+      return null;
+    }
     return await this.usersService.addOne(user.username, user.password);
   }
 
