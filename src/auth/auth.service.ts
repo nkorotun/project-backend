@@ -1,16 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
+import { AuthEntity } from './enteties/auth.entyty';
+import { getRepository, Repository } from 'typeorm';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
+    @InjectRepository(AuthEntity)
+    private authRepository: Repository<AuthEntity>,
     private jwtService: JwtService,
   ) {}
 
+  async findByUsername(username: string): Promise<AuthEntity> {
+    return this.authRepository.findOne({ username });
+  }
+
   async validateUser(username: string, pass: string): Promise<any> {
-    const user = await this.usersService.findOne(username);
+    const user = await this.findByUsername(username);
     if (user && user.password === pass) {
       const { password, ...result } = user;
       return result;
@@ -18,16 +25,17 @@ export class AuthService {
     return null;
   }
 
-  async register(user): Promise<any> {
-    const checkUser = await this.usersService.findOne(user.username);
+  async register(AuthEntity: AuthEntity): Promise<AuthEntity> {
+    const checkUser = await this.findByUsername(AuthEntity.username);
     if (checkUser) {
-      return null;
+      throw new Error('This username is booked');
     }
-    return await this.usersService.addOne(user.username, user.password);
+    return this.authRepository.save(AuthEntity);
   }
 
-  async login(user: any) {
-    const payload = { username: user.username, sub: user.userId };
+  async login(user: AuthEntity) {
+    const data = await this.validateUser(user.username, user.password);
+    const payload = { username: data.username, sub: data.id };
     return {
       access_token: this.jwtService.sign(payload),
     };
