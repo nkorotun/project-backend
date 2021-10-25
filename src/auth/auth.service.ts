@@ -34,6 +34,7 @@ export class AuthService {
     const newUser = await this.authRepository.save(AuthEntity);
     const payload = { username: newUser.username, sub: newUser.id };
     return {
+      username: payload.username,
       access_token: this.jwtService.sign(payload),
     };
   }
@@ -42,6 +43,7 @@ export class AuthService {
     const data = await this.findByUsername(user.username);
     const payload = { username: data.username, sub: data.id };
     return {
+      username: payload.username,
       access_token: this.jwtService.sign(payload),
     };
   }
