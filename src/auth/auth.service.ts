@@ -41,6 +41,9 @@ export class AuthService {
 
   async login(user: AuthEntity): Promise<JwtModule> {
     const data = await this.findByEmail(user.email);
+    if (data.password !== user.password) {
+      throw new Error('Wrong mail or password');
+    }
     const payload = { email: data.email, sub: data.id };
     return {
       email: data.email,

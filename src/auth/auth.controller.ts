@@ -1,8 +1,8 @@
 import {
+  Body,
   Controller,
   Get,
   Post,
-  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -15,12 +15,12 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post(AUTH.signIn)
-  async login(@Query() body) {
+  async login(@Body() body) {
     return this.authService.login(body);
   }
 
   @Post(AUTH.singUp)
-  async register(@Query() body) {
+  async register(@Body() body) {
     return this.authService.register(body);
   }
 
