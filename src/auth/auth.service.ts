@@ -16,7 +16,7 @@ export class AuthService {
     return this.authRepository.findOne({ username });
   }
 
-  async validateUser(username: string, pass: string): Promise<any> {
+  async validateUser(username: string, pass: string): Promise<object | null> {
     const user = await this.findByUsername(username);
     if (user && user.password === pass) {
       const { password, ...result } = user;
