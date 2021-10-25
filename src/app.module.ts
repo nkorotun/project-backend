@@ -5,16 +5,17 @@ import { AuthController } from './auth/auth.controller';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthEntity } from './auth/enteties/auth.entyty';
+import { DB } from './constants';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'codempire123',
-      database: 'projectDB',
+      type: DB.type,
+      host: DB.host,
+      port: DB.port,
+      username: DB.username,
+      password: DB.password,
+      database: DB.database,
       entities: [AuthEntity],
       synchronize: true,
     }),

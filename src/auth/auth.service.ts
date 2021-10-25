@@ -12,12 +12,12 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async findByUsername(username: string): Promise<AuthEntity> {
-    return this.authRepository.findOne({ username });
+  async findByEmail(email: string): Promise<AuthEntity> {
+    return this.authRepository.findOne({ email });
   }
 
-  async validateUser(username: string, pass: string): Promise<object | null> {
-    const user = await this.findByUsername(username);
+  async validateUser(email: string, pass: string): Promise<object | null> {
+    const user = await this.findByEmail(email);
     if (user && user.password === pass) {
       const { password, ...result } = user;
       return result;
@@ -26,24 +26,24 @@ export class AuthService {
   }
 
   async register(AuthEntity: AuthEntity): Promise<JwtModule> {
-    const user = await this.findByUsername(AuthEntity.username);
+    const user = await this.findByEmail(AuthEntity.email);
     if (user) {
-      throw new Error('This username is already exist');
+      throw new Error('This email is already exist');
     }
 
     const newUser = await this.authRepository.save(AuthEntity);
-    const payload = { username: newUser.username, sub: newUser.id };
+    const payload = { email: newUser.email, sub: newUser.id };
     return {
-      username: payload.username,
+      email: newUser.email,
       access_token: this.jwtService.sign(payload),
     };
   }
 
   async login(user: AuthEntity): Promise<JwtModule> {
-    const data = await this.findByUsername(user.username);
-    const payload = { username: data.username, sub: data.id };
+    const data = await this.findByEmail(user.email);
+    const payload = { email: data.email, sub: data.id };
     return {
-      username: payload.username,
+      email: data.email,
       access_token: this.jwtService.sign(payload),
     };
   }

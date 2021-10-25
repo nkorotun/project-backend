@@ -9,7 +9,7 @@ export class AuthEntity {
 
   @Column()
   @ApiProperty({ example: 'test@email.com' })
-  username: string;
+  email: string;
 
   @Column()
   @ApiProperty({ example: 'root1234' })
