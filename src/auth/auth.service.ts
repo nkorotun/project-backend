@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthEntity } from './enteties/auth.entyty';
 import { Repository } from 'typeorm';
@@ -25,16 +25,21 @@ export class AuthService {
     return null;
   }
 
-  async register(AuthEntity: AuthEntity): Promise<AuthEntity> {
-    const checkUser = await this.findByUsername(AuthEntity.username);
-    if (checkUser) {
-      throw new Error('This username is booked');
+  async register(AuthEntity: AuthEntity): Promise<JwtModule> {
+    const user = await this.findByUsername(AuthEntity.username);
+    if (user) {
+      throw new Error('This username is already exist');
     }
-    return this.authRepository.save(AuthEntity);
+
+    const newUser = await this.authRepository.save(AuthEntity);
+    const payload = { username: newUser.username, sub: newUser.id };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
   }
 
-  async login(user: AuthEntity) {
-    const data = await this.validateUser(user.username, user.password);
+  async login(user: AuthEntity): Promise<JwtModule> {
+    const data = await this.findByUsername(user.username);
     const payload = { username: data.username, sub: data.id };
     return {
       access_token: this.jwtService.sign(payload),
