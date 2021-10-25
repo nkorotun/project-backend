@@ -11,7 +11,7 @@ import { AUTH } from './constants';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
 
-@Controller('auth')
+@Controller(AUTH.main)
 export class AuthController {
   constructor(private authService: AuthService) {}
 
