@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
@@ -22,5 +23,12 @@ export class UserController {
   @Put(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
+  }
+  @ApiOperation({ summary: 'Getting one user' })
+  @ApiResponse({ status: HttpStatus.OK, type: UserEntity })
+  @HttpCode(HttpStatus.OK)
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.userService.findByid(id);
   }
 }
