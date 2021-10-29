@@ -10,6 +10,10 @@ export class UserEntity {
 
   @Column()
   @ApiProperty()
+  image: string;
+
+  @Column()
+  @ApiProperty()
   name: string;
 
   @Column()

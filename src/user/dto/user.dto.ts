@@ -6,6 +6,8 @@ export class CreateUserDto {
   @IsNotEmpty()
   id: string;
 
+  image: string;
+
   name: string;
 
   surname: string;
