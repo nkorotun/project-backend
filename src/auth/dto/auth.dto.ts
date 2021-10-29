@@ -1,8 +1,9 @@
 import { IsNotEmpty } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
+import { UserEntity } from 'src/user/enteties/user.entity';
 
-export class CreateUserDto {
+export class CreateAuthDto {
   @ApiProperty()
   @IsNotEmpty()
   email: string;
@@ -12,4 +13,6 @@ export class CreateUserDto {
   @ApiProperty()
   @IsNotEmpty()
   token: string;
+
+  user: UserEntity;
 }

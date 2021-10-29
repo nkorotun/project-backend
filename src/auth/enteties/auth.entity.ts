@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { UserEntity } from 'src/user/enteties/user.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class AuthEntity {
@@ -14,4 +21,8 @@ export class AuthEntity {
   @Column()
   @ApiProperty({ example: 'root1234' })
   password: string;
+
+  @OneToOne(() => UserEntity, (data) => data.auth, { onDelete: 'CASCADE' })
+  @JoinColumn()
+  user: UserEntity;
 }

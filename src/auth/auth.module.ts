@@ -6,7 +6,8 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthEntity } from './enteties/auth.entyty';
+import { AuthEntity } from './enteties/auth.entity';
+import { UserEntity } from 'src/user/enteties/user.entity';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { AuthEntity } from './enteties/auth.entyty';
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '60s' },
     }),
-    TypeOrmModule.forFeature([AuthEntity]),
+    TypeOrmModule.forFeature([AuthEntity, UserEntity]),
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   exports: [AuthService],
