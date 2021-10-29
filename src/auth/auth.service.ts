@@ -44,6 +44,7 @@ export class AuthService {
 
     const userInfo = await this.userRepository.save({
       auth: newUser,
+      image: '',
       name: '',
       surname: '',
     });
