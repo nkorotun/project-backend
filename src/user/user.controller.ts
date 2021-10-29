@@ -24,7 +24,6 @@ export class UserController {
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
   }
-
   @ApiOperation({ summary: 'Getting one user' })
   @ApiResponse({ status: HttpStatus.OK, type: UserEntity })
   @HttpCode(HttpStatus.OK)
