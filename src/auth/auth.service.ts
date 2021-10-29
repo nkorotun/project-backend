@@ -1,23 +1,32 @@
 import { Injectable } from '@nestjs/common';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AuthEntity } from './enteties/auth.entyty';
+import { AuthEntity } from './enteties/auth.entity';
 import { Repository } from 'typeorm';
+import { UserEntity } from 'src/user/enteties/user.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(AuthEntity)
     private authRepository: Repository<AuthEntity>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
     private jwtService: JwtService,
   ) {}
 
   async findByEmail(email: string): Promise<AuthEntity> {
-    return this.authRepository.findOne({ email });
+    return await this.authRepository.findOne({
+      where: { email },
+      relations: ['user'],
+    });
   }
 
   async validateUser(email: string, pass: string): Promise<object | null> {
-    const user = await this.findByEmail(email);
+    const user = await this.authRepository.findOne({
+      where: { email },
+      relations: ['user'],
+    });
     if (user && user.password === pass) {
       const { password, ...result } = user;
       return result;
@@ -25,17 +34,25 @@ export class AuthService {
     return null;
   }
 
-  async register(AuthEntity: AuthEntity): Promise<JwtModule> {
-    const user = await this.findByEmail(AuthEntity.email);
+  async register(authData: AuthEntity): Promise<JwtModule> {
+    const user = await this.findByEmail(authData.email);
     if (user) {
       throw new Error('This email is already exist');
     }
 
-    const newUser = await this.authRepository.save(AuthEntity);
+    const newUser = await this.authRepository.save(authData);
+
+    const userInfo = await this.userRepository.save({
+      auth: newUser,
+      name: '',
+      surname: '',
+    });
+
     const payload = { email: newUser.email, sub: newUser.id };
     return {
       email: newUser.email,
       access_token: this.jwtService.sign(payload),
+      userInfo,
     };
   }
 
